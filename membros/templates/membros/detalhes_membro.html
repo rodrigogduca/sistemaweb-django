@@ -9,7 +9,11 @@
     <h2>Tarefas</h2>
     <ul>
         {% for tarefa in tarefas %}
-            <li>{{ tarefa.titulo }} - {{ tarefa.status }}</li>
+            <li>
+                {{ tarefa.titulo }} - {{ tarefa.status }}
+                <a href="{% url 'editar_tarefa' tarefa.id %}">Editar</a>
+                <a href="{% url 'remover_tarefa' tarefa.id %}">Remover</a>
+            </li>
         {% empty %}
             <li>Nenhuma tarefa cadastrada.</li>
         {% endfor %}

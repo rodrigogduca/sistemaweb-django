@@ -27,7 +27,7 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.getenv('DEBUG') 
 
 ALLOWED_HOSTS = []
 
@@ -35,11 +35,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
+    #'django.contrib.admin', #Desabilitado para evitar acesso ao painel de administração
+    #'django.contrib.auth', #Desabilitado para evitar acesso ao sistema de autenticação
+    #'django.contrib.contenttypes', #Desabilitado para evitar acesso ao sistema de tipos de conteúdo
+    #'django.contrib.sessions', #Desabilitado para evitar acesso ao sistema de sessões
+    #'django.contrib.messages', #Desabilitado para evitar acesso ao sistema de mensagens
     'django.contrib.staticfiles',
     'membros',
 ]
@@ -107,9 +107,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-BR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
