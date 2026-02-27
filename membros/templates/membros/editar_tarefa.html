@@ -6,12 +6,14 @@
     <link rel="stylesheet" href="{% static 'membros/css/estilo.css' %}">
 </head>
 <body>
-    <h1>Editar Tarefa</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
-    </form>
-    <button onclick="window.location.href='{% url 'detalhes_membro' tarefa.membro.id %}'">Voltar</button>
+    <div class="container">
+        <h1>Editar Tarefa</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="window.location.href='{% url 'detalhes_membro' tarefa.membro.id %}'">Voltar</button>
+        </form>
+    </div>
 </body>
 </html>

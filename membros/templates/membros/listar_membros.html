@@ -8,13 +8,10 @@
 <body>
     <!-- Container principal para centralizar o conteúdo -->
     <div class="container">
-        <!-- Título da página -->
         <h1>Membros</h1>
-        <!-- Tabela para exibir os membros cadastrados -->
         <table style="width:100%; border-collapse:collapse; margin-bottom: 24px;">
             <thead>
                 <tr style="background:#e0e7ff;">
-                    <!-- Cabeçalho das colunas -->
                     <th style="padding:10px; border:1.5px solid #cbd5e1;">Nome</th>
                     <th style="padding:10px; border:1.5px solid #cbd5e1;">Email</th>
                     <th style="padding:10px; border:1.5px solid #cbd5e1;">Ações</th>
@@ -23,14 +20,11 @@
             <tbody>
                 {% for membro in membros %}
                 <tr style="background:#f1f5f9;">
-                    <!-- Nome do membro como link para detalhes -->
                     <td style="padding:10px; border:1.5px solid #cbd5e1;">
                         <a href="{% url 'detalhes_membro' membro.id %}">{{ membro.nome }}</a>
                     </td>
-                    <!-- Email do membro -->
                     <td style="padding:10px; border:1.5px solid #cbd5e1;">{{ membro.email }}</td>
-                    <!-- Botões de ação -->
-                    <td style="padding:10px; border:1.5px solid #cbd5e1;">
+                    <td style="padding:10px; border:1.5px solid #cbd5e1; text-align:center;">
                         {% if membro.id %}
                         <a href="{% url 'editar_membro' membro.id %}" class="btn">Editar</a>
                         <a href="{% url 'remover_membro' membro.id %}" class="btn">Remover</a>
@@ -38,13 +32,13 @@
                     </td>
                 </tr>
                 {% empty %}
-                <!-- Caso não haja membros -->
                 <tr><td colspan="3" style="text-align:center;">Nenhum membro cadastrado.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
-        <!-- Botão para cadastrar novo membro -->
-        <button onclick="window.location.href='{% url 'cadastrar_membro' %}'">Cadastrar novo membro</button>
+        <div style="text-align:center;">
+            <button onclick="window.location.href='{% url 'cadastrar_membro' %}'">Cadastrar novo membro</button>
+        </div>
     </div>
 </body>
 </html>

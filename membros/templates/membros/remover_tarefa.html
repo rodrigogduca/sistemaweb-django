@@ -6,12 +6,14 @@
     <link rel="stylesheet" href="{% static 'membros/css/estilo.css' %}">
 </head>
 <body>
-    <h1>Remover Tarefa</h1>
-    <p>Tem certeza que deseja remover a tarefa "{{ tarefa.titulo }}"?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Sim, remover</button>
-        <a href="{% url 'detalhes_membro' tarefa.membro.id %}">Cancelar</a>
-    </form>
+    <div class="container">
+        <h1>Remover Tarefa</h1>
+        <p>Tem certeza que deseja remover a tarefa <b>"{{ tarefa.titulo }}"</b>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Sim, remover</button>
+            <button type="button" onclick="window.location.href='{% url 'detalhes_membro' tarefa.membro.id %}'">Cancelar</button>
+        </form>
+    </div>
 </body>
 </html>
