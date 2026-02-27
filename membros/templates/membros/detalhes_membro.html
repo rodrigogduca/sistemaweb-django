@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Detalhes do Membro</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'membros/css/estilo.css' %}">
 </head>
 <body>
     <h1>{{ membro.nome }}</h1>
@@ -25,7 +27,6 @@
         <button type="submit">Adicionar</button>
     </form>
     <p>
-        <button onclick="window.location.href='{% url 'editar_membro' membro.id %}'">Editar Membro</button>
         <button onclick="window.location.href='{% url 'listar_membros' %}'">Voltar para lista de membros</button>
     </p>
 </body>

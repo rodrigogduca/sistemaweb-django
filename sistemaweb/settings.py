@@ -36,8 +36,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     #'django.contrib.admin', #Desabilitado para evitar acesso ao painel de administração
-    #'django.contrib.auth', #Desabilitado para evitar acesso ao sistema de autenticação
-    #'django.contrib.contenttypes', #Desabilitado para evitar acesso ao sistema de tipos de conteúdo
+    'django.contrib.auth', 
+    'django.contrib.contenttypes',
     #'django.contrib.sessions', #Desabilitado para evitar acesso ao sistema de sessões
     #'django.contrib.messages', #Desabilitado para evitar acesso ao sistema de mensagens
     'django.contrib.staticfiles',
