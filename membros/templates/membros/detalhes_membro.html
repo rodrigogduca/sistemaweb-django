@@ -6,28 +6,49 @@
     <link rel="stylesheet" href="{% static 'membros/css/estilo.css' %}">
 </head>
 <body>
-    <h1>{{ membro.nome }}</h1>
-    <p>Email: {{ membro.email }}</p>
-    <h2>Tarefas</h2>
-    <ul>
-        {% for tarefa in tarefas %}
-            <li>
-                {{ tarefa.titulo }} - {{ tarefa.status }}
-                <a href="{% url 'editar_tarefa' tarefa.id %}">Editar</a>
-                <a href="{% url 'remover_tarefa' tarefa.id %}">Remover</a>
-            </li>
-        {% empty %}
-            <li>Nenhuma tarefa cadastrada.</li>
-        {% endfor %}
-    </ul>
-    <h3>Adicionar Tarefa</h3>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Adicionar</button>
-    </form>
-    <p>
+    <div class="container">
+        <h1>Detalhes do Membro</h1>
+        <table style="width:100%; border-collapse:collapse; margin-bottom: 24px;">
+            <tr>
+                <th style="padding:10px; border:1.5px solid #cbd5e1;">Nome</th>
+                <td style="padding:10px; border:1.5px solid #cbd5e1;">{{ membro.nome }}</td>
+            </tr>
+            <tr>
+                <th style="padding:10px; border:1.5px solid #cbd5e1;">Email</th>
+                <td style="padding:10px; border:1.5px solid #cbd5e1;">{{ membro.email }}</td>
+            </tr>
+        </table>
+        <h2>Tarefas</h2>
+        <table style="width:100%; border-collapse:collapse; margin-bottom: 24px;">
+            <thead>
+                <tr style="background:#e0e7ff;">
+                    <th style="padding:10px; border:1.5px solid #cbd5e1;">Título</th>
+                    <th style="padding:10px; border:1.5px solid #cbd5e1;">Status</th>
+                    <th style="padding:10px; border:1.5px solid #cbd5e1;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tarefa in tarefas %}
+                <tr style="background:#f1f5f9;">
+                    <td style="padding:10px; border:1.5px solid #cbd5e1;">{{ tarefa.titulo }}</td>
+                    <td style="padding:10px; border:1.5px solid #cbd5e1;">{{ tarefa.status }}</td>
+                    <td style="padding:10px; border:1.5px solid #cbd5e1;">
+                        <a href="{% url 'editar_tarefa' tarefa.id %}" class="btn">Editar</a>
+                        <a href="{% url 'remover_tarefa' tarefa.id %}" class="btn">Remover</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" style="text-align:center;">Nenhuma tarefa cadastrada.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3>Adicionar Tarefa</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Adicionar</button>
+        </form>
         <button onclick="window.location.href='{% url 'listar_membros' %}'">Voltar para lista de membros</button>
-    </p>
+    </div>
 </body>
 </html>

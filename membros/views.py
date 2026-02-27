@@ -2,6 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Membro, Tarefa
 from .forms import MembroForm, TarefaForm
 
+
+# Página inicial do sistema
+def index(request):
+    return render(request, 'membros/index.html')
+
+
 # CRUD Membros
 def listar_membros(request):
     membros = Membro.objects.all()

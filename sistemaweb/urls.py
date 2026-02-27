@@ -15,11 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
 
 urlpatterns = [
-    path('', lambda request: redirect('membros/', permanent=False)), #coloca a página de membros como a página inicial
-    path('membros/', include('membros.urls')),
+    path('', include('membros.urls')),
 ]

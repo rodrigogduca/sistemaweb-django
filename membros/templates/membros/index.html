@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página Inicial</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'membros/css/estilo.css' %}">
+</head>
+<body>
+    <div class="container" style="margin-top: 80px;">
+        <h1>Bem-vindo ao Sistema de Membros</h1>
+        <p class="center" style="font-size:1.15em; margin-bottom: 24px;">
+            Este projeto é um sistema web desenvolvido em Django para gerenciar membros e suas tarefas.<br>
+            Com ele, você pode cadastrar, editar, remover e consultar membros, além de atribuir tarefas a cada um.<br>
+            O objetivo é ser didático, simples e funcional, ideal para quem está aprendendo programação web.
+        </p>
+        <ul style="margin-bottom: 24px;">
+            <li>✔ Cadastro, edição e remoção de membros</li>
+            <li>✔ Cadastro, edição e remoção de tarefas para cada membro</li>
+            <li>✔ Visualização das tarefas de cada membro</li>
+            <li>✔ Interface moderna e responsiva</li>
+        </ul>
+        <button onclick="window.location.href='{% url 'listar_membros' %}'">Ir para Lista de Membros</button>
+    </div>
+</body>
+</html>

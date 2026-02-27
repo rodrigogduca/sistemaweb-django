@@ -1,3 +1,18 @@
+/* Centralizar textos, botões e formulários */
+h1, h2, h3, p, label, .center {
+    text-align: center;
+}
+.container {
+    text-align: center;
+}
+form {
+    text-align: center;
+}
+button, .btn {
+    display: inline-block;
+    text-align: center;
+    margin: 8px 4px;
+}
 body {
     background: linear-gradient(120deg, #e0e7ff 0%, #f8fafc 100%);
     font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
@@ -26,10 +41,11 @@ li {
     background: #f1f5f9;
     border-radius: 7px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
     box-shadow: 0 1px 2px rgba(37,99,235,0.04);
     font-size: 1.08em;
+    text-align: center;
 }
 a {
     color: #2563eb;
