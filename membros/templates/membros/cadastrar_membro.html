@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastrar Membro</title>
+</head>
+<body>
+    <h1>Cadastrar Membro</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
+    <button onclick="window.location.href='{% url 'listar_membros' %}'">Voltar</button>
+</body>
+</html>

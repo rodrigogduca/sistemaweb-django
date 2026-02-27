@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Remover Tarefa</title>
+</head>
+<body>
+    <h1>Remover Tarefa</h1>
+    <p>Tem certeza que deseja remover a tarefa "{{ tarefa.titulo }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Sim, remover</button>
+        <a href="{% url 'detalhes_membro' tarefa.membro.id %}">Cancelar</a>
+    </form>
+</body>
+</html>

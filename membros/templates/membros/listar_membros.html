@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Membros</title>
+</head>
+<body>
+    <h1>Membros</h1>
+    <ul>
+        {% for membro in membros %}
+        <li>
+            <a href="{% url 'detalhes_membro' membro.id %}">{{ membro.nome }}</a> - {{ membro.email }}
+            {% if membro.id %}
+            <a href="{% url 'editar_membro' membro.id %}">Editar</a>
+            <a href="{% url 'remover_membro' membro.id %}">Remover</a>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li>Nenhum membro cadastrado.</li>
+        {% endfor %}
+    </ul>
+    <p>
+        <button onclick="window.location.href='{% url 'cadastrar_membro' %}'">Cadastrar novo membro</button>
+    </p>
+</body>
+</html>

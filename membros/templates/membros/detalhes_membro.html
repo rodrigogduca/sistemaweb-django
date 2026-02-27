@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalhes do Membro</title>
+</head>
+<body>
+    <h1>{{ membro.nome }}</h1>
+    <p>Email: {{ membro.email }}</p>
+    <h2>Tarefas</h2>
+    <ul>
+        {% for tarefa in tarefas %}
+            <li>{{ tarefa.titulo }} - {{ tarefa.status }}</li>
+        {% empty %}
+            <li>Nenhuma tarefa cadastrada.</li>
+        {% endfor %}
+    </ul>
+    <h3>Adicionar Tarefa</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Adicionar</button>
+    </form>
+    <p>
+        <button onclick="window.location.href='{% url 'editar_membro' membro.id %}'">Editar Membro</button>
+        <button onclick="window.location.href='{% url 'listar_membros' %}'">Voltar para lista de membros</button>
+    </p>
+</body>
+</html>
