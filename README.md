@@ -12,7 +12,7 @@ Este é um projeto simples feito com Django, ideal para iniciantes, que permite 
 
 1. **Clone o repositório:**
 	```
-	git clone https://github.com/SEU_USUARIO/sistemaweb-django.git
+	git clone https://github.com/rodrigogduca/sistemaweb-django.git
 	cd sistemaweb-django
 	```
 
@@ -45,7 +45,7 @@ Este é um projeto simples feito com Django, ideal para iniciantes, que permite 
 	```
 
 7. **Acesse no navegador:**
-	- [http://127.0.0.1:8000/membros/](http://127.0.0.1:8000/membros/)
+	- [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## Estrutura do Projeto
 - `membros/` – App responsável pelos membros e tarefas
@@ -57,9 +57,5 @@ Este é um projeto simples feito com Django, ideal para iniciantes, que permite 
 
 ## Observações
 - O projeto não utiliza painel administrativo nem autenticação.
-- Ideal para aprendizado de Django e CRUD básico.
 
 ---
-
-Feito para fins didáticos. Sinta-se à vontade para modificar e aprimorar!
-# sistemaweb-django
