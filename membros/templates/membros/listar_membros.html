@@ -1,44 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Lista de Membros</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'membros/css/estilo.css' %}">
-</head>
-<body>
-    <!-- Container principal para centralizar o conteúdo -->
-    <div class="container">
-        <h1>Membros</h1>
-        <table style="width:100%; border-collapse:collapse; margin-bottom: 24px;">
-            <thead>
-                <tr style="background:#e0e7ff;">
-                    <th style="padding:10px; border:1.5px solid #cbd5e1;">Nome</th>
-                    <th style="padding:10px; border:1.5px solid #cbd5e1;">Email</th>
-                    <th style="padding:10px; border:1.5px solid #cbd5e1;">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for membro in membros %}
-                <tr style="background:#f1f5f9;">
-                    <td style="padding:10px; border:1.5px solid #cbd5e1;">
-                        <a href="{% url 'detalhes_membro' membro.id %}">{{ membro.nome }}</a>
-                    </td>
-                    <td style="padding:10px; border:1.5px solid #cbd5e1;">{{ membro.email }}</td>
-                    <td style="padding:10px; border:1.5px solid #cbd5e1; text-align:center;">
-                        {% if membro.id %}
-                        <a href="{% url 'editar_membro' membro.id %}" class="btn">Editar</a>
-                        <a href="{% url 'remover_membro' membro.id %}" class="btn">Remover</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="3" style="text-align:center;">Nenhum membro cadastrado.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div style="text-align:center;">
-            <button onclick="window.location.href='{% url 'cadastrar_membro' %}'">Cadastrar novo membro</button>
-        </div>
-    </div>
-</body>
-</html>
+{% extends 'membros/base.html' %}
+
+{% block title %}Lista de Membros{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold text-gray-800 mb-6">Membros</h1>
+<table class="w-full border-collapse mb-6">
+    <thead>
+        <tr class="bg-indigo-100">
+            <th class="p-3 border border-gray-300 text-left">Nome</th>
+            <th class="p-3 border border-gray-300 text-left">Email</th>
+            <th class="p-3 border border-gray-300 text-center">Acoes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for membro in membros %}
+        <tr class="bg-gray-50 hover:bg-gray-100">
+            <td class="p-3 border border-gray-300">
+                <a href="{% url 'detalhes_membro' membro.id %}" class="text-indigo-600 hover:underline">{{ membro.nome }}</a>
+            </td>
+            <td class="p-3 border border-gray-300">{{ membro.email }}</td>
+            <td class="p-3 border border-gray-300 text-center space-x-2">
+                <a href="{% url 'editar_membro' membro.id %}" class="text-sm bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Editar</a>
+                <a href="{% url 'remover_membro' membro.id %}" class="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Remover</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" class="p-3 border border-gray-300 text-center text-gray-500">Nenhum membro cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="text-center">
+    <a href="{% url 'cadastrar_membro' %}" class="inline-block bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+        Cadastrar novo membro
+    </a>
+</div>
+{% endblock %}

@@ -1,87 +1,151 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Membro, Tarefa
-from .forms import MembroForm, TarefaForm
 
 
-# Página inicial do sistema
-def index(request):
-    return render(request, 'membros/index.html')
+# Login - inputs manuais no HTML, sem forms.py
+class LoginView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('index')
+        return render(request, 'membros/login.html')
+
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        usuario = authenticate(request, username=username, password=password)
+        if usuario is not None:
+            login(request, usuario)
+            return redirect('index')
+        return render(request, 'membros/login.html', {'erro': 'Usuario ou senha invalidos.'})
 
 
-# CRUD Membros
-def listar_membros(request):
-    membros = Membro.objects.all()
-    return render(request, 'membros/listar_membros.html', {'membros': membros})
+# Logout
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('login')
 
-# Cadastrar
-def cadastrar_membro(request):
-    if request.method == 'POST':
-        form = MembroForm(request.POST)
-        if form.is_valid():
-            form.save()
+
+# Pagina inicial (protegida)
+class IndexView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request):
+        return render(request, 'membros/index.html')
+
+
+# Listar todos os membros (protegida)
+class ListarMembrosView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request):
+        membros = Membro.objects.all()
+        return render(request, 'membros/listar_membros.html', {'membros': membros})
+
+
+# Cadastrar membro (protegida)
+class CadastrarMembroView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request):
+        return render(request, 'membros/cadastrar_membro.html')
+
+    def post(self, request):
+        nome = request.POST.get('nome')
+        email = request.POST.get('email')
+        if nome and email:
+            Membro.objects.create(nome=nome, email=email)
             return redirect('listar_membros')
-    else:
-        form = MembroForm()
-    return render(request, 'membros/cadastrar_membro.html', {'form': form})
+        return render(request, 'membros/cadastrar_membro.html')
 
 
-# Editar
-def editar_membro(request, membro_id):
-    membro = get_object_or_404(Membro, id=membro_id)
-    if request.method == 'POST':
-        form = MembroForm(request.POST, instance=membro)
-        if form.is_valid():
-            form.save()
+# Editar membro (protegida)
+class EditarMembroView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request, membro_id):
+        membro = get_object_or_404(Membro, id=membro_id)
+        return render(request, 'membros/editar_membro.html', {'membro': membro})
+
+    def post(self, request, membro_id):
+        membro = get_object_or_404(Membro, id=membro_id)
+        nome = request.POST.get('nome')
+        email = request.POST.get('email')
+        if nome and email:
+            membro.nome = nome
+            membro.email = email
+            membro.save()
             return redirect('listar_membros')
-    else:
-        form = MembroForm(instance=membro)
-    return render(request, 'membros/editar_membro.html', {'form': form, 'membro': membro})
+        return render(request, 'membros/editar_membro.html', {'membro': membro})
 
 
-# Remover
-def remover_membro(request, membro_id):
-    membro = get_object_or_404(Membro, id=membro_id)
-    if request.method == 'POST':
+# Remover membro (protegida)
+class RemoverMembroView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request, membro_id):
+        membro = get_object_or_404(Membro, id=membro_id)
+        return render(request, 'membros/remover_membro.html', {'membro': membro})
+
+    def post(self, request, membro_id):
+        membro = get_object_or_404(Membro, id=membro_id)
         membro.delete()
         return redirect('listar_membros')
-    return render(request, 'membros/remover_membro.html', {'membro': membro})
 
 
-# CRUD Tarefas
-# Exibir e Adicionar
-def detalhes_membro(request, membro_id):
-    membro = get_object_or_404(Membro, id=membro_id)
-    tarefas = Tarefa.objects.filter(membro=membro)
-    if request.method == 'POST':
-        form = TarefaForm(request.POST)
-        if form.is_valid():
-            tarefa = form.save(commit=False)
-            tarefa.membro = membro
-            tarefa.save()
+# Detalhes do membro + adicionar tarefa (protegida)
+class DetalhesMembroView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request, membro_id):
+        membro = get_object_or_404(Membro, id=membro_id)
+        tarefas = Tarefa.objects.filter(membro=membro)
+        return render(request, 'membros/detalhes_membro.html', {'membro': membro, 'tarefas': tarefas})
+
+    def post(self, request, membro_id):
+        membro = get_object_or_404(Membro, id=membro_id)
+        titulo = request.POST.get('titulo')
+        descricao = request.POST.get('descricao')
+        if titulo and descricao:
+            Tarefa.objects.create(membro=membro, titulo=titulo, descricao=descricao)
             return redirect('detalhes_membro', membro_id=membro.id)
-    else:
-        form = TarefaForm()
-    return render(request, 'membros/detalhes_membro.html', {'membro': membro, 'tarefas': tarefas, 'form': form})
+        tarefas = Tarefa.objects.filter(membro=membro)
+        return render(request, 'membros/detalhes_membro.html', {'membro': membro, 'tarefas': tarefas})
 
 
-# Editar
-def editar_tarefa(request, tarefa_id):
-    tarefa = get_object_or_404(Tarefa, id=tarefa_id)
-    if request.method == 'POST':
-        form = TarefaForm(request.POST, instance=tarefa)
-        if form.is_valid():
-            form.save()
+# Editar tarefa (protegida)
+class EditarTarefaView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request, tarefa_id):
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        return render(request, 'membros/editar_tarefa.html', {'tarefa': tarefa})
+
+    def post(self, request, tarefa_id):
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        titulo = request.POST.get('titulo')
+        descricao = request.POST.get('descricao')
+        if titulo and descricao:
+            tarefa.titulo = titulo
+            tarefa.descricao = descricao
+            tarefa.save()
             return redirect('detalhes_membro', membro_id=tarefa.membro.id)
-    else:
-        form = TarefaForm(instance=tarefa)
-    return render(request, 'membros/editar_tarefa.html', {'form': form, 'tarefa': tarefa})
+        return render(request, 'membros/editar_tarefa.html', {'tarefa': tarefa})
 
 
-# Remover
-def remover_tarefa(request, tarefa_id):
-    tarefa = get_object_or_404(Tarefa, id=tarefa_id)
-    membro_id = tarefa.membro.id
-    if request.method == 'POST':
+# Remover tarefa (protegida)
+class RemoverTarefaView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request, tarefa_id):
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        return render(request, 'membros/remover_tarefa.html', {'tarefa': tarefa})
+
+    def post(self, request, tarefa_id):
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        membro_id = tarefa.membro.id
         tarefa.delete()
         return redirect('detalhes_membro', membro_id=membro_id)
-    return render(request, 'membros/remover_tarefa.html', {'tarefa': tarefa})

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema Web{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-indigo-600 text-white px-6 py-3 flex items-center justify-between">
+        <a href="{% url 'index' %}" class="text-xl font-bold">Sistema Web</a>
+        <div class="flex items-center gap-4">
+            <a href="{% url 'listar_membros' %}" class="hover:underline">Membros</a>
+            <a href="{% url 'cadastrar_membro' %}" class="hover:underline">Cadastrar</a>
+            <span class="text-indigo-200">|</span>
+            <span class="text-sm">{{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="bg-indigo-800 px-3 py-1 rounded text-sm hover:bg-indigo-900">Sair</a>
+        </div>
+    </nav>
+    <main class="max-w-3xl mx-auto mt-10 bg-white rounded-lg shadow p-8">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
