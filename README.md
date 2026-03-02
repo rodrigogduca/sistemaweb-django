@@ -20,7 +20,7 @@ Sistema web feito com Django para cadastrar, listar, editar e remover membros e 
 
 1. **Clone o repositorio:**
 	```
-	git clone https://github.com/SEU_USUARIO/sistemaweb-django.git
+	git clone https://github.com/rodrigogduca/sistemaweb-django.git
 	cd sistemaweb-django
 	```
 
@@ -63,9 +63,14 @@ Sistema web feito com Django para cadastrar, listar, editar e remover membros e 
 	python manage.py runserver
 	```
 
+<<<<<<< HEAD
 9. **Acesse no navegador:**
 	- [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 	- Voce sera redirecionado para a tela de login.
+=======
+7. **Acesse no navegador:**
+	- [http://127.0.0.1:8000](http://127.0.0.1:8000)
+>>>>>>> 133b7b2a3e21d66cb51c74e1ddb078b7ab3fe53d
 
 ## Estrutura do Projeto
 - `membros/` – App responsavel pelos membros e tarefas
@@ -74,6 +79,7 @@ Sistema web feito com Django para cadastrar, listar, editar e remover membros e 
 - `views.py` – Logica das paginas em Class-Based Views (POO)
 - `urls.py` – Rotas do sistema
 
+<<<<<<< HEAD
 ## Observacoes
 - O projeto utiliza autenticacao com login/logout.
 - Todas as paginas sao protegidas — so usuarios logados acessam o sistema.
@@ -83,3 +89,9 @@ Sistema web feito com Django para cadastrar, listar, editar e remover membros e 
 ---
 
 Feito para fins didaticos. Sinta-se a vontade para modificar e aprimorar!
+=======
+## Observações
+- O projeto não utiliza painel administrativo nem autenticação.
+
+---
+>>>>>>> 133b7b2a3e21d66cb51c74e1ddb078b7ab3fe53d
