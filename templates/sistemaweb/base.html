@@ -10,8 +10,12 @@
     <nav class="bg-indigo-600 text-white px-6 py-3 flex items-center justify-between">
         <a href="{% url 'index' %}" class="text-xl font-bold">Sistema Web</a>
         <div class="flex items-center gap-4">
-            <a href="{% url 'listar_membros' %}" class="hover:underline">Membros</a>
-            <a href="{% url 'cadastrar_membro' %}" class="hover:underline">Cadastrar</a>
+            {% if user.is_superuser %}
+                <a href="{% url 'listar_membros' %}" class="hover:underline">Membros</a>
+                <a href="{% url 'cadastrar_membro' %}" class="hover:underline">Cadastrar</a>
+            {% else %}
+                <a href="{% url 'index' %}" class="hover:underline">Minhas Tarefas</a>
+            {% endif %}
             <span class="text-indigo-200">|</span>
             <span class="text-sm">{{ user.username }}</span>
             <a href="{% url 'logout' %}" class="bg-indigo-800 px-3 py-1 rounded text-sm hover:bg-indigo-900">Sair</a>

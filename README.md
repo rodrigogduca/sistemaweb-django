@@ -4,17 +4,19 @@ Sistema web feito com Django para cadastrar, listar, editar e remover membros e 
 
 ## Funcionalidades
 - Tela de login com autenticacao do Django
-- Cadastro, listagem, edicao e remocao de membros
-- Cadastro, listagem, edicao e remocao de tarefas para cada membro
-- Visualizacao das tarefas de um membro ao clicar em seu nome
+- Controle de acesso: admin (superusuario) ve tudo, membro ve apenas suas tarefas
+- Cadastro, listagem, edicao e remocao de membros (apenas admin)
+- Cadastro, edicao e remocao de tarefas para cada membro
+- Cada membro possui login proprio (usuario e senha)
 - Interface com Tailwind CSS (via CDN)
 - Views em Class-Based Views (POO) sem forms.py — inputs manuais no HTML
 
 ## Tecnologias
-- Python 3
+- Python 3.14
 - Django 4.2 LTS
-- MySQL (MAMP ou MySQL Server 8.0)
+- MySQL Server 8.0
 - Tailwind CSS (CDN)
+- python-dotenv (variaveis de ambiente)
 
 ## Como rodar o projeto
 
@@ -37,11 +39,11 @@ Sistema web feito com Django para cadastrar, listar, editar e remover membros e 
 
 4. **Configure as variaveis de ambiente:**
 	- Crie um arquivo `.env` na raiz do projeto com:
-	  ```
-	  SECRET_KEY=sua_chave_secreta
-	  DEBUG=True
-	  DB_PASSWORD=sua_senha_mysql
-	  ```
+	```
+	SECRET_KEY=sua_chave_secreta
+	DEBUG=True
+	PASSWORD=sua_senha_mysql
+	```
 
 5. **Crie o banco de dados no MySQL:**
 	```sql
@@ -63,23 +65,44 @@ Sistema web feito com Django para cadastrar, listar, editar e remover membros e 
 	python manage.py runserver
 	```
 
-<<<<<<< HEAD
 9. **Acesse no navegador:**
 	- [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 	- Voce sera redirecionado para a tela de login.
-=======
-7. **Acesse no navegador:**
-	- [http://127.0.0.1:8000](http://127.0.0.1:8000)
->>>>>>> 133b7b2a3e21d66cb51c74e1ddb078b7ab3fe53d
 
 ## Estrutura do Projeto
-- `membros/` – App responsavel pelos membros e tarefas
-- `templates/` – Paginas HTML com Tailwind CSS
-- `models.py` – Modelos de dados (Membro, Tarefa)
-- `views.py` – Logica das paginas em Class-Based Views (POO)
-- `urls.py` – Rotas do sistema
+```
+sistemaweb-django/
+├── setup/                          # Pacote de configuracao do Django
+│   ├── settings.py                 # Configuracoes (banco, apps, templates)
+│   ├── urls.py                     # Rotas raiz (inclui as URLs do app)
+│   ├── wsgi.py                     # Ponto de entrada WSGI (producao)
+│   └── asgi.py                     # Ponto de entrada ASGI (async)
+├── sistemaweb/                     # App principal
+│   ├── models.py                   # Modelos de dados (Membro, Tarefa)
+│   ├── views.py                    # Logica das paginas (10 Class-Based Views)
+│   ├── urls.py                     # Rotas do app (login, membros, tarefas)
+│   ├── apps.py                     # Configuracao do app
+│   ├── admin.py                    # Admin do Django (desabilitado)
+│   ├── migrations/                 # Migracoes do banco de dados
+│   └── static/sistemaweb/css/      # CSS personalizado
+├── templates/sistemaweb/           # Templates HTML com Tailwind CSS
+│   ├── base.html                   # Template base (navbar + layout)
+│   ├── login.html                  # Tela de login
+│   ├── index.html                  # Pagina inicial (admin)
+│   ├── listar_membros.html         # Lista de membros (admin)
+│   ├── cadastrar_membro.html       # Formulario de cadastro
+│   ├── editar_membro.html          # Formulario de edicao
+│   ├── detalhes_membro.html        # Detalhes + tarefas do membro
+│   ├── remover_membro.html         # Confirmacao de remocao
+│   ├── editar_tarefa.html          # Edicao de tarefa
+│   └── remover_tarefa.html         # Confirmacao de remocao de tarefa
+├── manage.py                       # Utilitario de linha de comando do Django
+├── requirements.txt                # Dependencias do projeto
+├── .env                            # Variaveis de ambiente (nao versionado)
+├── .gitignore                      # Arquivos ignorados pelo Git
+└── LICENSE                         # Licenca MIT
+```
 
-<<<<<<< HEAD
 ## Observacoes
 - O projeto utiliza autenticacao com login/logout.
 - Todas as paginas sao protegidas — so usuarios logados acessam o sistema.
@@ -87,11 +110,4 @@ Sistema web feito com Django para cadastrar, listar, editar e remover membros e 
 - O painel administrativo do Django esta desabilitado.
 
 ---
-
-Feito para fins didaticos. Sinta-se a vontade para modificar e aprimorar!
-=======
-## Observações
-- O projeto não utiliza painel administrativo nem autenticação.
-
----
->>>>>>> 133b7b2a3e21d66cb51c74e1ddb078b7ab3fe53d
+Feito para fins didaticos.

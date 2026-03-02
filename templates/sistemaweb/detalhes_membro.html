@@ -1,4 +1,4 @@
-{% extends 'membros/base.html' %}
+{% extends 'sistemaweb/base.html' %}
 
 {% block title %}Detalhes do Membro{% endblock %}
 
@@ -14,9 +14,9 @@
 <table class="w-full border-collapse mb-6">
     <thead>
         <tr class="bg-indigo-100">
-            <th class="p-3 border border-gray-300 text-left">Título</th>
+            <th class="p-3 border border-gray-300 text-left">Titulo</th>
             <th class="p-3 border border-gray-300 text-left">Status</th>
-            <th class="p-3 border border-gray-300 text-center">Ações</th>
+            <th class="p-3 border border-gray-300 text-center">Acoes</th>
         </tr>
     </thead>
     <tbody>
@@ -41,13 +41,13 @@
 <form method="post" class="space-y-4 mb-6">
     {% csrf_token %}
     <div>
-        <label for="titulo" class="block text-sm font-medium text-gray-700 mb-1">Título</label>
-        <input type="text" name="titulo" id="titulo" placeholder="Título da tarefa" required
+        <label for="titulo" class="block text-sm font-medium text-gray-700 mb-1">Titulo</label>
+        <input type="text" name="titulo" id="titulo" placeholder="Titulo da tarefa" required
                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
     </div>
     <div>
-        <label for="descricao" class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
-        <input type="text" name="descricao" id="descricao" placeholder="Descrição da tarefa" required
+        <label for="descricao" class="block text-sm font-medium text-gray-700 mb-1">Descricao</label>
+        <input type="text" name="descricao" id="descricao" placeholder="Descricao da tarefa" required
                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
     </div>
     <div>
@@ -55,9 +55,11 @@
     </div>
 </form>
 
+{% if user.is_superuser %}
 <div class="text-center">
     <a href="{% url 'listar_membros' %}" class="inline-block bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400">
         Voltar para lista de membros
     </a>
 </div>
+{% endif %}
 {% endblock %}
