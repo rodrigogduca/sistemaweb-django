@@ -1,14 +1,14 @@
 """
-urls.py - Definicao das rotas (URLs) do aplicativo sistemaweb.
+urls.py - Definição das rotas (URLs) do aplicativo sistemaweb.
 
-Cada path() conecta um endereco URL a uma View (classe).
-Quando o usuario acessa uma URL no navegador, o Django percorre esta lista
-de cima para baixo ate encontrar um padrao que corresponda, e entao
+Cada path() conecta um endereço URL a uma View (classe).
+Quando o usuário acessa uma URL no navegador, o Django percorre esta lista
+de cima para baixo até encontrar um padrão que corresponda, e então
 executa a View associada.
 
-Parametros do path():
-- Primeiro argumento: o padrao da URL (ex: 'login/', 'editar/<int:membro_id>/')
-- Segundo argumento: a View que sera executada (Classe.as_view())
+Parâmetros do path():
+- Primeiro argumento: o padrão da URL (ex: 'login/', 'editar/<int:membro_id>/')
+- Segundo argumento: a View que será executada (Classe.as_view())
 - name: nome interno usado nos templates ({% url 'nome' %}) e nos redirects das views
 
 Exemplo de uso nos templates:
@@ -17,8 +17,8 @@ Exemplo de uso nos templates:
 Exemplo de uso nas views:
   return redirect('login')  -->  redireciona para /login/
 
-O <int:membro_id> captura um numero inteiro da URL e passa como parametro
-para o metodo da View (ex: def get(self, request, membro_id)).
+O <int:membro_id> captura um número inteiro da URL e passa como parâmetro
+para o método da View (ex: def get(self, request, membro_id)).
 """
 
 from django.urls import path
@@ -36,11 +36,11 @@ from .views import (
 )
 
 urlpatterns = [
-    # Autenticacao
+    # Autenticação
     path('login/', LoginView.as_view(), name='login'),       # Tela de login
-    path('logout/', LogoutView.as_view(), name='logout'),     # Encerra sessao
+    path('logout/', LogoutView.as_view(), name='logout'),     # Encerra sessão
 
-    # Pagina inicial (rota raiz)
+    # Página inicial (rota raiz)
     path('', PaginaInicialView.as_view(), name='index'),
 
     # CRUD de Membros

@@ -1,23 +1,23 @@
 """
-views.py - Logica de controle das paginas (Views) do sistema.
+views.py - Lógica de controle das páginas (Views) do sistema.
 
-Este arquivo contem todas as Views do sistema, usando Class-Based Views (CBVs).
-Cada classe herda de View (do Django) e define metodos get() e/ou post()
-para tratar requisicoes HTTP GET e POST respectivamente.
+Este arquivo contém todas as Views do sistema, usando Class-Based Views (CBVs).
+Cada classe herda de View (do Django) e define métodos get() e/ou post()
+para tratar requisições HTTP GET e POST respectivamente.
 
-- GET: Quando o usuario acessa uma pagina pelo navegador (clicando em link ou digitando URL)
-- POST: Quando o usuario envia um formulario (clicando em botao de submit)
+- GET: Quando o usuário acessa uma página pelo navegador (clicando em link ou digitando URL)
+- POST: Quando o usuário envia um formulário (clicando em botão de submit)
 
-O mixin LoginRequiredMixin protege as views: se o usuario nao estiver logado,
-ele e redirecionado automaticamente para a pagina de login.
+O mixin LoginRequiredMixin protege as views: se o usuário não estiver logado,
+ele é redirecionado automaticamente para a página de login.
 
 Controle de acesso:
-- Superusuario (admin): acessa tudo (listar, cadastrar, editar, remover membros e tarefas)
-- Membro comum: so acessa seus proprios dados e tarefas
-- Visitante nao logado: e redirecionado para a tela de login
+- Superusuário (admin): acessa tudo (listar, cadastrar, editar, remover membros e tarefas)
+- Membro comum: só acessa seus próprios dados e tarefas
+- Visitante não logado: é redirecionado para a tela de login
 
-Nao usamos forms.py do Django. Todos os inputs sao escritos diretamente
-no HTML e os dados sao capturados aqui com request.POST.get('nome_do_campo').
+Não usamos forms.py do Django. Todos os inputs são escritos diretamente
+no HTML e os dados são capturados aqui com request.POST.get('nome_do_campo').
 """
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -30,92 +30,92 @@ from .models import Membro, Tarefa
 
 class LoginView(View):
     """
-    View de login - Tela de autenticacao do sistema.
+    View de login - Tela de autenticação do sistema.
 
-    GET: Exibe o formulario de login (usuario e senha).
-         Se o usuario ja estiver autenticado, redireciona para a pagina inicial.
-    POST: Recebe usuario e senha do formulario, tenta autenticar.
-          - Login valido + superusuario: redireciona para a pagina inicial (index)
-          - Login valido + membro comum: redireciona para a pagina de detalhes do membro
-          - Login invalido: exibe mensagem de erro na mesma tela
+    GET: Exibe o formulário de login (usuário e senha).
+         Se o usuário já estiver autenticado, redireciona para a página inicial.
+    POST: Recebe usuário e senha do formulário, tenta autenticar.
+          - Login válido + superusuário: redireciona para a página inicial (index)
+          - Login válido + membro comum: redireciona para a página de detalhes do membro
+          - Login inválido: exibe mensagem de erro na mesma tela
 
-    Nao usa LoginRequiredMixin pois e a propria pagina de login (acesso publico).
+    Não usa LoginRequiredMixin pois é a própria página de login (acesso público).
     """
 
     def get(self, request):
-        """Exibe a tela de login. Se ja estiver logado, vai para o index."""
+        """Exibe a tela de login. Se já estiver logado, vai para o index."""
         if request.user.is_authenticated:
             return redirect('index')
         return render(request, 'sistemaweb/login.html')
 
     def post(self, request):
-        """Processa o formulario de login (autentica usuario e senha)."""
-        # Captura os dados enviados pelo formulario HTML
+        """Processa o formulário de login (autentica usuário e senha)."""
+        # Captura os dados enviados pelo formulário HTML
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        # authenticate() verifica se usuario e senha estao corretos no banco
+        # authenticate() verifica se usuário e senha estão corretos no banco
         usuario = authenticate(request, username=username, password=password)
 
         if usuario is not None:
-            # login() cria a sessao do usuario no Django (armazena no banco/cookie)
+            # login() cria a sessão do usuário no Django (armazena no banco/cookie)
             login(request, usuario)
 
-            # Superusuario (admin) vai para a pagina inicial completa
+            # Superusuário (admin) vai para a página inicial completa
             if usuario.is_superuser:
                 return redirect('index')
 
-            # Membro comum vai direto para sua pagina de detalhes/tarefas
+            # Membro comum vai direto para sua página de detalhes/tarefas
             try:
                 membro = Membro.objects.get(user=usuario)
                 return redirect('detalhes_membro', membro_id=membro.id)
             except Membro.DoesNotExist:
                 return redirect('index')
 
-        # Se autenticacao falhar, mostra erro na tela de login
-        return render(request, 'sistemaweb/login.html', {'erro': 'Usuario ou senha invalidos.'})
+        # Se autenticação falhar, mostra erro na tela de login
+        return render(request, 'sistemaweb/login.html', {'erro': 'Usuário ou senha inválidos.'})
 
 
 class LogoutView(View):
     """
-    View de logout - Encerra a sessao do usuario.
+    View de logout - Encerra a sessão do usuário.
 
-    GET: Faz o logout (destroi a sessao no servidor) e redireciona para a tela de login.
+    GET: Faz o logout (destrói a sessão no servidor) e redireciona para a tela de login.
     """
 
     def get(self, request):
-        """Encerra a sessao e redireciona para o login."""
+        """Encerra a sessão e redireciona para o login."""
         logout(request)
         return redirect('login')
 
 
 class PaginaInicialView(LoginRequiredMixin, View):
     """
-    View da pagina inicial do sistema (rota raiz '/').
+    View da página inicial do sistema (rota raiz '/').
 
-    Protegida por LoginRequiredMixin: usuario nao logado e redirecionado para login.
+    Protegida por LoginRequiredMixin: usuário não logado é redirecionado para login.
 
     GET:
-    - Superusuario: exibe a pagina inicial com boas-vindas e links de navegacao
-    - Membro comum: redireciona para sua pagina de detalhes (suas tarefas)
-    - Usuario sem membro vinculado: faz logout por seguranca
+    - Superusuário: exibe a página inicial com boas-vindas e links de navegação
+    - Membro comum: redireciona para sua página de detalhes (suas tarefas)
+    - Usuário sem membro vinculado: faz logout por segurança
 
-    login_url: define para onde redirecionar se o usuario nao estiver logado.
+    login_url: define para onde redirecionar se o usuário não estiver logado.
     """
     login_url = 'login'
 
     def get(self, request):
-        """Exibe pagina inicial (admin) ou redireciona para detalhes (membro)."""
-        # Superusuario ve a pagina inicial completa
+        """Exibe página inicial (admin) ou redireciona para detalhes (membro)."""
+        # Superusuário vê a página inicial completa
         if request.user.is_superuser:
             return render(request, 'sistemaweb/index.html')
 
-        # Membro comum e redirecionado para sua propria pagina de detalhes
+        # Membro comum é redirecionado para sua própria página de detalhes
         try:
             membro = Membro.objects.get(user=request.user)
             return redirect('detalhes_membro', membro_id=membro.id)
         except Membro.DoesNotExist:
-            # Seguranca: se nao tem membro vinculado, encerra a sessao
+            # Segurança: se não tem membro vinculado, encerra a sessão
             logout(request)
             return redirect('login')
 
@@ -124,16 +124,16 @@ class ListarMembrosView(LoginRequiredMixin, View):
     """
     View para listar todos os membros cadastrados.
 
-    Acesso: APENAS superusuario (admin). Membros comuns sao redirecionados.
+    Acesso: APENAS superusuário (admin). Membros comuns são redirecionados.
 
     GET: Busca todos os membros no banco (Membro.objects.all()) e exibe
-         em uma tabela com nome, email e botoes de acao (editar/remover).
+         em uma tabela com nome, email e botões de ação (editar/remover).
     """
     login_url = 'login'
 
     def get(self, request):
         """Lista todos os membros. Apenas admin pode acessar."""
-        # Verifica se e admin - se nao for, redireciona para a pagina inicial
+        # Verifica se é admin - se não for, redireciona para a página inicial
         if not request.user.is_superuser:
             return redirect('index')
 
@@ -146,17 +146,17 @@ class CadastrarMembroView(LoginRequiredMixin, View):
     """
     View para cadastrar um novo membro no sistema.
 
-    Acesso: APENAS superusuario (admin).
+    Acesso: APENAS superusuário (admin).
 
-    GET: Exibe o formulario de cadastro (nome, email, username, senha).
+    GET: Exibe o formulário de cadastro (nome, email, username, senha).
     POST: Valida os dados, cria um User do Django (para login) e um Membro vinculado.
-          Validacoes: campos obrigatorios, username unico, email unico.
-          Apos cadastrar, redireciona para a lista de membros.
+          Validações: campos obrigatórios, username único, email único.
+          Após cadastrar, redireciona para a lista de membros.
     """
     login_url = 'login'
 
     def get(self, request):
-        """Exibe o formulario de cadastro. Apenas admin pode acessar."""
+        """Exibe o formulário de cadastro. Apenas admin pode acessar."""
         if not request.user.is_superuser:
             return redirect('index')
         return render(request, 'sistemaweb/cadastrar_membro.html')
@@ -166,22 +166,22 @@ class CadastrarMembroView(LoginRequiredMixin, View):
         if not request.user.is_superuser:
             return redirect('index')
 
-        # Captura os dados do formulario HTML
+        # Captura os dados do formulário HTML
         nome = request.POST.get('nome')
         email = request.POST.get('email')
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        # Validacao dos dados
+        # Validação dos dados
         erro = None
         if not (nome and email and username and password):
-            erro = 'Todos os campos sao obrigatorios.'
+            erro = 'Todos os campos são obrigatórios.'
         elif User.objects.filter(username=username).exists():
-            erro = 'Esse nome de usuario ja esta em uso.'
+            erro = 'Esse nome de usuário já está em uso.'
         elif Membro.objects.filter(email=email).exists():
-            erro = 'Esse email ja esta cadastrado.'
+            erro = 'Esse email já está cadastrado.'
 
-        # Se houver erro, reexibe o formulario com a mensagem e os valores preenchidos
+        # Se houver erro, reexibe o formulário com a mensagem e os valores preenchidos
         if erro:
             return render(request, 'sistemaweb/cadastrar_membro.html', {
                 'erro': erro,
@@ -190,11 +190,11 @@ class CadastrarMembroView(LoginRequiredMixin, View):
                 'username': username,
             })
 
-        # create_user() cria o usuario COM a senha hasheada (criptografada)
+        # create_user() cria o usuário COM a senha hasheada (criptografada)
         # Nunca usar User.objects.create() pois salvaria a senha em texto puro
         user = User.objects.create_user(username=username, password=password, email=email)
 
-        # Cria o Membro vinculado ao User recem-criado
+        # Cria o Membro vinculado ao User recém-criado
         Membro.objects.create(nome=nome, email=email, user=user)
         return redirect('listar_membros')
 
@@ -203,29 +203,29 @@ class EditarMembroView(LoginRequiredMixin, View):
     """
     View para editar os dados de um membro existente.
 
-    Acesso: Superusuario (admin) OU o proprio membro (dono do perfil).
+    Acesso: Superusuário (admin) OU o próprio membro (dono do perfil).
 
-    GET: Exibe o formulario de edicao preenchido com os dados atuais do membro.
-    POST: Salva as alteracoes (nome e email).
-          - Admin: volta para a lista de membros apos salvar
-          - Membro: volta para sua pagina de detalhes apos salvar
+    GET: Exibe o formulário de edição preenchido com os dados atuais do membro.
+    POST: Salva as alterações (nome e email).
+          - Admin: volta para a lista de membros após salvar
+          - Membro: volta para sua página de detalhes após salvar
     """
     login_url = 'login'
 
     def get(self, request, membro_id):
-        """Exibe formulario de edicao. Verifica se tem permissao."""
+        """Exibe formulário de edição. Verifica se tem permissão."""
         membro = get_object_or_404(Membro, id=membro_id)
 
-        # Controle de acesso: admin ou o proprio dono do perfil
+        # Controle de acesso: admin ou o próprio dono do perfil
         if not request.user.is_superuser and (membro.user is None or membro.user != request.user):
             return redirect('index')
         return render(request, 'sistemaweb/editar_membro.html', {'membro': membro})
 
     def post(self, request, membro_id):
-        """Salva as alteracoes do membro no banco de dados."""
+        """Salva as alterações do membro no banco de dados."""
         membro = get_object_or_404(Membro, id=membro_id)
 
-        # Controle de acesso: admin ou o proprio dono
+        # Controle de acesso: admin ou o próprio dono
         if not request.user.is_superuser and (membro.user is None or membro.user != request.user):
             return redirect('index')
 
@@ -235,7 +235,7 @@ class EditarMembroView(LoginRequiredMixin, View):
         if nome and email:
             membro.nome = nome
             membro.email = email
-            membro.save()  # Salva as alteracoes no banco de dados
+            membro.save()  # Salva as alterações no banco de dados
 
             # Admin volta para a lista, membro volta para seus detalhes
             if request.user.is_superuser:
@@ -249,17 +249,17 @@ class RemoverMembroView(LoginRequiredMixin, View):
     """
     View para remover um membro do sistema.
 
-    Acesso: APENAS superusuario (admin).
+    Acesso: APENAS superusuário (admin).
 
-    GET: Exibe tela de confirmacao ("Tem certeza que deseja remover?").
+    GET: Exibe tela de confirmação ("Tem certeza que deseja remover?").
     POST: Remove o membro. Se o membro tiver um User vinculado, deleta o User
           (o CASCADE automaticamente deleta o Membro e suas Tarefas).
-          Se nao tiver User, deleta o Membro diretamente.
+          Se não tiver User, deleta o Membro diretamente.
     """
     login_url = 'login'
 
     def get(self, request, membro_id):
-        """Exibe tela de confirmacao de remocao. Apenas admin."""
+        """Exibe tela de confirmação de remoção. Apenas admin."""
         if not request.user.is_superuser:
             return redirect('index')
         membro = get_object_or_404(Membro, id=membro_id)
@@ -275,22 +275,22 @@ class RemoverMembroView(LoginRequiredMixin, View):
             # Deletar o User faz CASCADE: deleta Membro e todas as Tarefas
             membro.user.delete()
         else:
-            # Se nao tem User, deleta o Membro diretamente
+            # Se não tem User, deleta o Membro diretamente
             membro.delete()
         return redirect('listar_membros')
 
 
 class DetalhesMembroView(LoginRequiredMixin, View):
     """
-    View de detalhes do membro: exibe informacoes, lista tarefas e permite adicionar novas.
+    View de detalhes do membro: exibe informações, lista tarefas e permite adicionar novas.
 
-    Acesso: Superusuario (admin) OU o proprio membro (dono).
+    Acesso: Superusuário (admin) OU o próprio membro (dono).
 
-    GET: Busca o membro e suas tarefas, exibe a pagina de detalhes com:
+    GET: Busca o membro e suas tarefas, exibe a página de detalhes com:
          - Dados do membro (nome, email)
          - Tabela com todas as tarefas do membro
-         - Formulario para adicionar nova tarefa
-    POST: Cria uma nova tarefa para o membro (recebe titulo e descricao do formulario).
+         - Formulário para adicionar nova tarefa
+    POST: Cria uma nova tarefa para o membro (recebe título e descrição do formulário).
     """
     login_url = 'login'
 
@@ -298,11 +298,11 @@ class DetalhesMembroView(LoginRequiredMixin, View):
         """Exibe detalhes do membro e suas tarefas."""
         membro = get_object_or_404(Membro, id=membro_id)
 
-        # Controle de acesso: admin ou o proprio dono
+        # Controle de acesso: admin ou o próprio dono
         if not request.user.is_superuser and (membro.user is None or membro.user != request.user):
             return redirect('index')
 
-        # Busca todas as tarefas deste membro especifico
+        # Busca todas as tarefas deste membro específico
         tarefas = Tarefa.objects.filter(membro=membro)
         return render(request, 'sistemaweb/detalhes_membro.html', {'membro': membro, 'tarefas': tarefas})
 
@@ -322,7 +322,7 @@ class DetalhesMembroView(LoginRequiredMixin, View):
             Tarefa.objects.create(membro=membro, titulo=titulo, descricao=descricao)
             return redirect('detalhes_membro', membro_id=membro.id)
 
-        # Se dados incompletos, recarrega a pagina
+        # Se dados incompletos, recarrega a página
         tarefas = Tarefa.objects.filter(membro=membro)
         return render(request, 'sistemaweb/detalhes_membro.html', {'membro': membro, 'tarefas': tarefas})
 
@@ -331,16 +331,16 @@ class EditarTarefaView(LoginRequiredMixin, View):
     """
     View para editar uma tarefa existente.
 
-    Acesso: Superusuario (admin) OU o membro dono da tarefa.
-    O acesso e verificado pelo membro vinculado a tarefa (tarefa.membro.user).
+    Acesso: Superusuário (admin) OU o membro dono da tarefa.
+    O acesso é verificado pelo membro vinculado à tarefa (tarefa.membro.user).
 
-    GET: Exibe formulario de edicao preenchido com titulo e descricao atuais.
-    POST: Salva as alteracoes e redireciona para a pagina de detalhes do membro.
+    GET: Exibe formulário de edição preenchido com título e descrição atuais.
+    POST: Salva as alterações e redireciona para a página de detalhes do membro.
     """
     login_url = 'login'
 
     def get(self, request, tarefa_id):
-        """Exibe formulario de edicao da tarefa."""
+        """Exibe formulário de edição da tarefa."""
         tarefa = get_object_or_404(Tarefa, id=tarefa_id)
         membro = tarefa.membro  # Busca o membro dono da tarefa
 
@@ -350,7 +350,7 @@ class EditarTarefaView(LoginRequiredMixin, View):
         return render(request, 'sistemaweb/editar_tarefa.html', {'tarefa': tarefa})
 
     def post(self, request, tarefa_id):
-        """Salva as alteracoes da tarefa no banco de dados."""
+        """Salva as alterações da tarefa no banco de dados."""
         tarefa = get_object_or_404(Tarefa, id=tarefa_id)
         membro = tarefa.membro
 
@@ -374,15 +374,15 @@ class RemoverTarefaView(LoginRequiredMixin, View):
     """
     View para remover uma tarefa.
 
-    Acesso: Superusuario (admin) OU o membro dono da tarefa.
+    Acesso: Superusuário (admin) OU o membro dono da tarefa.
 
-    GET: Exibe tela de confirmacao ("Tem certeza que deseja remover a tarefa?").
-    POST: Remove a tarefa do banco e redireciona para a pagina de detalhes do membro.
+    GET: Exibe tela de confirmação ("Tem certeza que deseja remover a tarefa?").
+    POST: Remove a tarefa do banco e redireciona para a página de detalhes do membro.
     """
     login_url = 'login'
 
     def get(self, request, tarefa_id):
-        """Exibe tela de confirmacao de remocao da tarefa."""
+        """Exibe tela de confirmação de remoção da tarefa."""
         tarefa = get_object_or_404(Tarefa, id=tarefa_id)
         membro = tarefa.membro
 

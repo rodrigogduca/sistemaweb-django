@@ -1,5 +1,3 @@
-# Migracao inicial gerada pelo Django 4.2.28
-
 import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
