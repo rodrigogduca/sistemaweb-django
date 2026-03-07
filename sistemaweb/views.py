@@ -1,92 +1,46 @@
 """
-views.py - Lógica de controle das páginas (Views) do sistema.
+views.py - Lógica de controle das páginas (Views) do app 'sistemaweb'.
 
-Este arquivo contém todas as Views do sistema, usando Class-Based Views (CBVs).
-Cada classe herda de View (do Django) e define métodos get() e/ou post()
-para tratar requisições HTTP GET e POST respectivamente.
+Este arquivo contém APENAS as Views de membros e tarefas (regras de negócio).
+A autenticação (login/logout) está no app 'autenticacao', seguindo o princípio
+de Separação de Interesses (Separation of Concerns):
+    - autenticacao/views.py -> cuida de login e logout (quem é o usuário?)
+    - sistemaweb/views.py   -> cuida de membros e tarefas (o que o usuário faz?)
 
-- GET: Quando o usuário acessa uma página pelo navegador (clicando em link ou digitando URL)
-- POST: Quando o usuário envia um formulário (clicando em botão de submit)
+Conceitos de Programação Orientada a Objetos (POO) usados neste arquivo:
 
-O mixin LoginRequiredMixin protege as views: se o usuário não estiver logado,
-ele é redirecionado automaticamente para a página de login.
+1. CLASSE (class): Um "molde" para criar objetos. Cada View é uma classe.
+   Exemplo: ListarMembrosView é uma classe que sabe listar membros.
 
-Controle de acesso:
-- Superusuário (admin): acessa tudo (listar, cadastrar, editar, remover membros e tarefas)
+2. HERANÇA: Todas as Views herdam de View (classe base do Django).
+   Com o LoginRequiredMixin, usamos herança múltipla — a View ganha
+   tanto o comportamento de View quanto a proteção de login.
+   Ordem de herança: (LoginRequiredMixin, View) — o mixin vem primeiro.
+
+3. MÉTODO: Funções definidas dentro de uma classe (get, post).
+   O parâmetro 'self' é uma referência ao próprio objeto (instância).
+
+4. ENCAPSULAMENTO: Cada classe cuida apenas da sua responsabilidade.
+   EditarMembroView só edita membros. RemoverTarefaView só remove tarefas.
+
+Conceitos básicos de programação:
+- Variáveis: armazenam dados (nome, email, membro_id)
+- Condicionais (if/else): controlam o fluxo conforme a lógica de negócio
+- Estrutura de dados: dicionários {} passam dados para os templates
+- Funções: get_object_or_404() encapsula a busca + tratamento de erro
+
+Controle de acesso (autorização):
+- Superusuário (admin): acessa tudo
 - Membro comum: só acessa seus próprios dados e tarefas
-- Visitante não logado: é redirecionado para a tela de login
-
-Não usamos forms.py do Django. Todos os inputs são escritos diretamente
-no HTML e os dados são capturados aqui com request.POST.get('nome_do_campo').
+- Visitante não logado: redirecionado para login pelo LoginRequiredMixin
 """
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from .models import Membro, Tarefa
-
-
-class LoginView(View):
-    """
-    View de login - Tela de autenticação do sistema.
-
-    GET: Exibe o formulário de login (usuário e senha).
-         Se o usuário já estiver autenticado, redireciona para a página inicial.
-    POST: Recebe usuário e senha do formulário, tenta autenticar.
-          - Login válido + superusuário: redireciona para a página inicial (index)
-          - Login válido + membro comum: redireciona para a página de detalhes do membro
-          - Login inválido: exibe mensagem de erro na mesma tela
-
-    Não usa LoginRequiredMixin pois é a própria página de login (acesso público).
-    """
-
-    def get(self, request):
-        """Exibe a tela de login. Se já estiver logado, vai para o index."""
-        if request.user.is_authenticated:
-            return redirect('index')
-        return render(request, 'sistemaweb/login.html')
-
-    def post(self, request):
-        """Processa o formulário de login (autentica usuário e senha)."""
-        # Captura os dados enviados pelo formulário HTML
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        # authenticate() verifica se usuário e senha estão corretos no banco
-        usuario = authenticate(request, username=username, password=password)
-
-        if usuario is not None:
-            # login() cria a sessão do usuário no Django (armazena no banco/cookie)
-            login(request, usuario)
-
-            # Superusuário (admin) vai para a página inicial completa
-            if usuario.is_superuser:
-                return redirect('index')
-
-            # Membro comum vai direto para sua página de detalhes/tarefas
-            try:
-                membro = Membro.objects.get(user=usuario)
-                return redirect('detalhes_membro', membro_id=membro.id)
-            except Membro.DoesNotExist:
-                return redirect('index')
-
-        # Se autenticação falhar, mostra erro na tela de login
-        return render(request, 'sistemaweb/login.html', {'erro': 'Usuário ou senha inválidos.'})
-
-
-class LogoutView(View):
-    """
-    View de logout - Encerra a sessão do usuário.
-
-    GET: Faz o logout (destrói a sessão no servidor) e redireciona para a tela de login.
-    """
-
-    def get(self, request):
-        """Encerra a sessão e redireciona para o login."""
-        logout(request)
-        return redirect('login')
 
 
 class PaginaInicialView(LoginRequiredMixin, View):

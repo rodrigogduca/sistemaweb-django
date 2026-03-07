@@ -1,3 +1,23 @@
+<!--
+login.html - Template da tela de login do sistema.
+
+Este arquivo HTML é o formulário de login. Ele NÃO herda de base.html
+porque a tela de login tem um layout diferente (centralizado, sem navbar).
+
+Conceitos usados:
+- {% csrf_token %}: proteção contra ataques CSRF (Cross-Site Request Forgery).
+  O Django gera um token secreto no formulário que é verificado no servidor.
+  Sem isso, o Django rejeita o POST com erro 403.
+
+- {% if erro %}: template tag condicional do Django.
+  A variável 'erro' é passada pela LoginView quando a autenticação falha.
+
+- method="post": o formulário envia os dados via HTTP POST (não aparece na URL).
+  O Django recebe os dados em request.POST na view.
+
+- name="username" / name="password": o atributo 'name' define a chave usada
+  para acessar o valor na view (request.POST.get('username')).
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

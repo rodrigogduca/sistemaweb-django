@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.auth',           # Sistema de autenticação (User, login, logout, permissões)
     'django.contrib.contenttypes',   # Rastreamento de tipos de modelo (usado internamente)
     'django.contrib.sessions',       # Gerenciamento de sessões (manter usuário logado)
-    'sistemaweb',                    # Nosso app principal (membros e tarefas)
+    'autenticacao',                  # App de autenticação (login, logout, criação do admin)
+    'sistemaweb',                    # App principal (membros e tarefas)
 ]
 
 # =============================================
@@ -83,7 +84,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates'],  # Busca templates na pasta templates/ da raiz
-        'APP_DIRS': True,                   # Também busca em cada app/templates/
+        'APP_DIRS': False,                   # False = NÃO busca dentro de app/templates/
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',  # Disponibiliza 'request' nos templates
@@ -94,8 +95,6 @@ TEMPLATES = [
     },
 ]
 
-# Aplicação WSGI - ponto de entrada para servidores web em produção
-WSGI_APPLICATION = 'setup.wsgi.application'
 
 
 # =============================================
@@ -156,3 +155,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # =============================================
 # URL base para acessar arquivos estáticos (CSS, JS, imagens)
 #STATIC_URL = 'static/'
+
+# Aplicação WSGI - ponto de entrada para servidores web em produção
+#WSGI_APPLICATION = 'setup.wsgi.application'
