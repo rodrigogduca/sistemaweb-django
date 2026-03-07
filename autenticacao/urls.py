@@ -28,8 +28,5 @@ urlpatterns = [
     # Rota de login: /login/
     # Quando acessar /login/, o Django executa LoginView
     path('login/', LoginView.as_view(), name='login'),
-
-    # Rota de logout: /logout/
-    # Quando acessar /logout/, o Django executa LogoutView
     path('logout/', LogoutView.as_view(), name='logout'),
 ]
